@@ -23,6 +23,14 @@ api = twitter.Api(
     access_token_secret=os.environ['access_token_secret']
 )
 
+"""
+Input:
+{
+  "status_id": "twitter status ID",
+  "image": "minio_path_to_image.jpg"
+}
+"""
+
 def handle(req):
     filename = tempfile.gettempdir() + '/' + str(int(round(time.time() * 1000))) + '.jpg'
     in_reply_to_status_id = req['status_id']
