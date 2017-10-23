@@ -63,7 +63,10 @@ minio_hostname=<minio url>
 ```
 
 ```
-$ docker service create --name tweetlistener --env-file tweetlistener.envs
+$ docker service create --name tweetlistener \
+  --env-file tweetlistener.envs
+  --image developius/tweetlistener:latest
+  --network func_functions
 ```
 
 Now uncomment the lines in `stack.yml` for the `tweetpic` function & redeploy:
