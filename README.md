@@ -7,18 +7,27 @@
 ## Minio
 
 You'll need a [Minio](https://minio.io) server running to store the images in.
-I found running a single-container minio server was the easiest way as I had issues when running the distributed version.
+I found running a single-container minio server was the easiest way as I had issues when running the distributed version. Once Minio is deployed, go and create a new bucket called `colorization`. This is where the images will be stored.
 
 ```
 $ docker run -dp 9000:9000 \
-  --restart always --name minio -e \
-  "MINIO_ACCESS_KEY=<key>" -e "MINIO_SECRET_KEY=<secret>" \
+  --restart always --name minio \
+  -e "MINIO_ACCESS_KEY=<key>" \
+  -e "MINIO_SECRET_KEY=<secret>" \
   -v /mnt/data:/data -v /mnt/config:/root/.minio \
   minio/minio server /data
 ```
 
 
 ## OpenFaaS functions
+
+Firstly, you'll need to make sure the OpenFaaS gateway is configured to have larger read & write timeouts as the colorise function can sometimes take a few seconds to return.
+
+```
+$ docker service update func_gateway \
+  --env-add "write_timeout=60" \
+  --env-add "read_timeout=60"
+```
 
 Create `credentials.yml` with these contents:
 

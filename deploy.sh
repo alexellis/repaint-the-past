@@ -1,3 +1,3 @@
 #!/bin/sh
 
-faas-cli deploy -f colorization.yml --replace
+faas-cli deploy -f stack.yml --replace

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-faas-cli build -f colorization.yml
+faas-cli build -f stack.yml
