@@ -1,5 +1,7 @@
 # repainting-the-past
 
+![](https://github.com/alexellis/repaint-the-past/raw/master/colorisation-architecture.png)
+
 # Deployment
 
 You'll need a [Minio](https://minio.io) server running to store the images in.
