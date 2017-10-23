@@ -4,12 +4,17 @@
 
 # Deployment
 
+## Minio
+
 You'll need a [Minio](https://minio.io) server running to store the images in.
 I found running a single-container minio server was the easiest way as I had issues when running the distributed version.
 
 ```
 $ docker run -dp 9000:9000 --restart always --name minio -e "MINIO_ACCESS_KEY=<key>" -e "MINIO_SECRET_KEY=<secret>" -v /mnt/data:/data -v /mnt/config:/root/.minio minio/minio server /data
 ```
+
+
+## tweetlistener
 
 Next you need to deploy the `tweetlistener` service. This will listen for tweets matching a certain criteria and then forward the requests into the `colorise` function. Make sure you only deploy one replica of `tweetlistener` because otherwise you'll get duplicate events.
 
@@ -28,6 +33,12 @@ minio_hostname=<minio url>
 
 ```
 $ docker service create --name tweetlistener --env-file env.list
+```
+
+## OpenFaaS functions
+
+```
+$ faas-cli deploy -f colorization.yml
 ```
 
 # Invocation
