@@ -13,12 +13,13 @@ functions:
     environment_file:
       - credentials.yml
 
-  tweetpic:
-    lang: Dockerfile
-    handler: ./tweetpic
-    image: developius/openfaas-tweetpic
-    environment:
-      read_timeout: 60
-      write_timeout: 60
-    environment_file:
-      - credentials.yml
+  # uncomment this function for twitter support
+  # tweetpic:
+  #   lang: Dockerfile
+  #   handler: ./tweetpic
+  #   image: developius/openfaas-tweetpic
+  #   environment:
+  #     read_timeout: 60
+  #     write_timeout: 60
+  #   environment_file:
+  #     - credentials.yml
