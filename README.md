@@ -69,6 +69,10 @@ Create `tweetlistener.envs` with the following contents:
 minio_access_key=<minio access key>
 minio_secret_key=<minio secret key>
 minio_hostname=<minio url>
+consumer_key=<twitter consumer key>
+consumer_secret=<twitter consumer secret>
+access_token=<twitter token>
+access_token_secret=<twitter token secret>
 ```
 
 ```
