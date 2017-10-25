@@ -1,0 +1,22 @@
+sudo: required
+
+services:
+  - docker
+
+language: python
+python:
+  - "2.7"
+
+before_install:
+  # installing newer docker
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+
+  # installing the faas-cli
+  - curl -sSL https://cli.openfaas.com | sudo sh
+  - docker swarm init
+  - faas-cli build -f stack.yml
+
+after_script:
+  - docker swarm leave -f
+  
