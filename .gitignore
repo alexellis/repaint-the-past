@@ -3,3 +3,5 @@ credentials.yml
 .DS_Store
 template
 *.jpg
+*.mov
+*.mp4

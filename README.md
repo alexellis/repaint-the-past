@@ -155,3 +155,53 @@ $ faas-cli deploy -f twitter_stack.yml
 
 # Tweet it
 You can now tweet [@colorisebot](https://twitter.com/colorisebot) (or your own twitter account) with your image and see the data flow through the functions. Depending on the underlying infrastructure, it should take about 10s for the whole flow from tweeting the image, to receiving the tweeted reply.
+
+# Colourising video
+
+We've shown how we can colourise photos, but our original goal was to colourise video.
+There are a couple of scripts we've written to do this.
+
+## Prerequisite
+
+You need to install some dependencies before you can run the code.
+
+```
+$ pip install -r requirements.txt
+```
+
+## Splitting frames
+
+First, modify line 2 of `split_frames.py` to use the path to your video file.
+
+Now you can run the script which splits up all the frames & outputs them into `frames/` (make sure this folder exists).
+
+```
+$ python split_frames.py
+```
+
+## Colourising the frames
+
+Next you need to run the actual colourisation code. To do this, you must first start up the docker container which will run the colourisation.
+
+```
+$ docker run -a STDERR -e write_timeout=60 -e read_timeout=60 -p 8080:8080 --rm developius/openfaas-colorization:0.1
+```
+
+Now you can run `colourise_frames.py` to generate the colourised frames.
+
+```
+$ python colourise_frames.py
+```
+
+This will create all the colourised frames in the folder `output/` (make sure this one exists too).
+
+## Stitch them back together
+
+The final step is to stitch them back together with `ffmpeg`.
+ffmpeg can be installed via brew with `brew install ffmpeg` and is available on most other platforms too.
+
+```
+$ ffmpeg -framerate 24 -i output/%05d.jpg output.mp4
+```
+
+Now check your current directory for a file name `output.mp4`. Whoop, you just colourised the past, again!
