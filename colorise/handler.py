@@ -19,35 +19,42 @@ def nostdout():
     yield
     sys.stdout = save_stdout
 
-minioClient = Minio(os.environ['minio_url'],
-                  access_key=os.environ['minio_access_key'],
-                  secret_key=os.environ['minio_secret_key'],
-                  secure=False)
-
-caffe.set_mode_cpu()
-
-# Select desired model
-net = caffe.Net('./models/colorization_deploy_v2.prototxt', './models/colorization_release_v2.caffemodel', caffe.TEST)
-
-(H_in,W_in) = net.blobs['data_l'].data.shape[2:] # get input shape
-(H_out,W_out) = net.blobs['class8_ab'].data.shape[2:] # get output shape
-
-pts_in_hull = np.load('./resources/pts_in_hull.npy') # load cluster centers
-net.params['class8_ab'][0].data[:,:,0,0] = pts_in_hull.transpose((1,0)) # populate cluster centers as 1x1 convolution kernel
-
 """
 Input:
 {
   "image": "minio_path_to_image.jpg"
 }
-"""
 
+Output:
+{
+  "image": "minio_path_to_image.jpg",
+  "duration": 5.5
+}
+"""
 def handle(json_in):
+    minioClient = Minio(os.environ['minio_url'],
+                    access_key=os.environ['minio_access_key'],
+                    secret_key=os.environ['minio_secret_key'],
+                    secure=False)
+
+    caffe.set_mode_cpu()
+
+    # Select desired model
+    net = caffe.Net('./models/colorization_deploy_v2.prototxt', './models/colorization_release_v2.caffemodel', caffe.TEST)
+
+    (H_in,W_in) = net.blobs['data_l'].data.shape[2:] # get input shape
+    (H_out,W_out) = net.blobs['class8_ab'].data.shape[2:] # get output shape
+
+    pts_in_hull = np.load('./resources/pts_in_hull.npy') # load cluster centers
+    net.params['class8_ab'][0].data[:,:,0,0] = pts_in_hull.transpose((1,0)) # populate cluster centers as 1x1 convolution kernel
+
     json_in = json.loads(json_in)
+
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
         now = str(int(round(time.time() * 1000)))
+
         filename_in = now + '.jpg'
         filename_out = now + '_output.jpg'
         file_path_in = tempfile.gettempdir() + '/' + filename_in
@@ -93,4 +100,5 @@ def handle(json_in):
 
         with nostdout():
             minioClient.fput_object('colorization', filename_out, file_path_out)
+
         return json_out
