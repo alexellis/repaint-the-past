@@ -93,7 +93,7 @@ $ mc config host add minios3 http://$IP:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
 
 ```
 $ mc mb minios3/colorization
-Bucket created successfully ‘minios3/colorization.
+Bucket created successfully minios3/colorization.
 ```
 
 * Upload an image to your minio bucket:
@@ -149,10 +149,8 @@ $ docker service create --name tweetlistener \
   --network func_functions
 ```
 
-Now uncomment the lines in `stack.yml` for the `tweetpic` function & redeploy:
-
 ```
-$ faas-cli deploy -f stack.yml
+$ faas-cli deploy -f twitter_stack.yml
 ```
 
 # Tweet it
