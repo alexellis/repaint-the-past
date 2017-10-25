@@ -2,3 +2,4 @@ tweetlistener.envs
 credentials.yml
 .DS_Store
 template
+*.jpg
