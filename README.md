@@ -144,10 +144,25 @@ access_token_secret=<twitter token secret>
 
 ```
 $ docker service create --name tweetlistener \
-  --env-file tweetlistener.envs
-  --image developius/tweetlistener:latest
-  --network func_functions
+  --env-file tweetlistener.envs \
+  --network func_functions \
+  developius/tweetlistener:latest
 ```
+
+Update `credentials.yml` to add your Twitter details
+
+```yaml
+environment:
+  minio_secret_key: <minio secret key>
+  minio_access_key: <minio access key>
+  minio_url: <minio url>
+  consumer_key: <twitter consumer key>
+  consumer_secret: <twitter consumer secret>
+  access_token: <twitter token>
+  access_token_secret: <twitter token secret>
+```
+
+Then re-deploy
 
 ```
 $ faas-cli deploy -f twitter_stack.yml
