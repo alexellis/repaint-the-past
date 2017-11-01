@@ -1,0 +1,14 @@
+provider:
+  name: faas
+  gateway: http://localhost:8080
+
+functions:
+  bucketset:
+    lang: python
+    handler: ./bucketset
+    image: bucketset
+    environment:
+      minio_secret_key: vMIoCaBu9sSg4ODrSkbD9CGXtq0TTpq6kq7psLuE
+      minio_access_key: ZBPIIAOCJRY9QLUVEHQO
+      minio_url: 127.0.0.1:9000
+
