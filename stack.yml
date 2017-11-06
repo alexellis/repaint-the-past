@@ -12,3 +12,8 @@ functions:
       write_timeout: 60
     environment_file:
       - credentials.yml
+
+  normalisecolor:
+    lang: Dockerfile
+    handler: ./normalisecolor
+    image: alexellis2/normalisecolor:0.1

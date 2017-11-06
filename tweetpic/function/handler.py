@@ -49,7 +49,7 @@ def handle(req):
         im.save(filename, "JPEG")
         image = open(filename, 'rb')
 
-        status = api.PostUpdate("I colorized your image using #openfaas in %.1f seconds #dockercon" % duration,
+        status = api.PostUpdate("I colourised your image in %.1f seconds. Find out more: https://subr.pw/s/cmpb5x7" % duration,
             media=image,
             auto_populate_reply_metadata=True,
             in_reply_to_status_id=in_reply_to_status_id)

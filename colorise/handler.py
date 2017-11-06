@@ -94,6 +94,15 @@ def handle(json_in):
 
         plt.imsave(file_path_out, img_rgb_out)
 
+
+        # normalise image
+        url = "http://gateway:8080/function/normalisecolor"
+        with open(file_path_out, "rb") as f:
+            r = requests.post(url, data=f.read())
+
+        with open(file_path_out, "wb") as f:
+            f.write(r.content)
+
         json_out = json_in
         json_out['image'] = filename_out
         json_out['duration'] = duration
