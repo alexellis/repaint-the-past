@@ -38,7 +38,7 @@ def requeue(st):
         "X-Delay-Duration": str(delay_duration)
     }
 
-    r = requests.post("http://mailbox:8080/deadletter/feeder", data=json.dumps(st), json=False, headers=headers)
+    r = requests.post("http://mailbox:8080/deadletter/tweetpic", data=json.dumps(st), json=False, headers=headers)
 
     print "Posting to Mailbox: ", r.status_code
     if r.status_code!= 202:
