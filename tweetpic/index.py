@@ -14,4 +14,7 @@ if(__name__ == "__main__"):
     st = get_stdin()
     req = json.loads(st)
     res = handler.handle(req)
-    print("Replied to %i" % res['status_id'])
+    if (res['status_id']):
+        print("Replied to %i" % res['status_id'])
+    else:
+        print("Tweetback to %i failed" % res['reply_to'])

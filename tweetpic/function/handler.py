@@ -75,9 +75,15 @@ def handle(req):
                 media=image,
                 auto_populate_reply_metadata=True,
                 in_reply_to_status_id=in_reply_to_status_id)
-        except twitter.TwitterError, e:
+
+            return {
+                "reply_to": in_reply_to_status_id,
+                "status_id": status.id
+            }
+
+        except twitter.error.TwitterError, e:
             for m in e.message:
-                if m['code'] == 34:
+                if m['code'] == 34 or m['code'] == 385:
                     print('Tweet %i went missing' % in_reply_to_status_id)
                     break
                 if m['code'] == 88:
@@ -88,5 +94,5 @@ def handle(req):
         image.close()
         return {
             "reply_to": in_reply_to_status_id,
-            "status_id": status.id
+            "status_id": False
         }
