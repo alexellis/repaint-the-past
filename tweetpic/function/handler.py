@@ -1,4 +1,4 @@
-import twitter, os, json, time, tempfile, contextlib, sys, io
+import twitter, os, json, time, tempfile, contextlib, sys, io, requests
 
 from PIL import Image
 from minio import Minio
@@ -38,7 +38,7 @@ def requeue(st):
         "X-Delay-Duration": str(delay_duration)
     }
 
-    r = requests.post("http://mailbox:8080/deadletter/tweetpic", data=json.dumps(st), json=False, headers=headers)
+    r = requests.post("http://mailbox:8080/deadletter/tweetpic", data=st, json=False, headers=headers)
 
     print "Posting to Mailbox: ", r.status_code
     if r.status_code!= 202:
@@ -52,7 +52,8 @@ Input:
 }
 """
 
-def handle(req):
+def handle(st):
+    req = json.loads(st)
     filename = tempfile.gettempdir() + '/' + str(int(round(time.time() * 1000))) + '.jpg'
     in_reply_to_status_id = req['status_id']
     duration = req['duration']
@@ -70,29 +71,29 @@ def handle(req):
         im.save(filename, "JPEG")
         image = open(filename, 'rb')
 
+        status_id = False
+
         try:
             status = api.PostUpdate("I colourised your image in %.1f seconds. Find out how: https://subr.pw/s/cmpb5x7" % duration,
                 media=image,
                 auto_populate_reply_metadata=True,
                 in_reply_to_status_id=in_reply_to_status_id)
 
-            return {
-                "reply_to": in_reply_to_status_id,
-                "status_id": status.id
-            }
+            status_id = status.id
 
         except twitter.error.TwitterError, e:
             for m in e.message:
                 if m['code'] == 34 or m['code'] == 385:
                     print('Tweet %i went missing' % in_reply_to_status_id)
-                    break
                 if m['code'] == 88:
                     print('We hit the API limits, queuing %i' % in_reply_to_status_id)
-                    requeue(req)
-                    break
+                    requeue(st)
 
-        image.close()
-        return {
-            "reply_to": in_reply_to_status_id,
-            "status_id": False
-        }
+        finally:
+            # this is always run, regardless of wether we got an error or not
+            image.close()
+
+            return {
+                "reply_to": in_reply_to_status_id,
+                "status_id": status_id
+            }
