@@ -11,7 +11,7 @@ def nostdout():
     yield
     sys.stdout = save_stdout
 
-minioClient = Minio(os.environ['minio_url'],
+minioClient = Minio(os.environ['minio_authority'],
                   access_key=os.environ['minio_access_key'],
                   secret_key=os.environ['minio_secret_key'],
                   secure=False)
