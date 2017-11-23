@@ -4,13 +4,13 @@ import json
 import os
 
 # Request
-# { 
+# {
 #   "inbox": "aellis_catjump_inbox",
 #   "outbox": "aellis_catjump_outbox"
 # }
 def handle(st):
     req = json.loads(st)
-    mc = Minio(os.environ['minio_url'],
+    mc = Minio(os.environ['minio_authority'],
                     access_key=os.environ['minio_access_key'],
                     secret_key=os.environ['minio_secret_key'],
                     secure=False)
@@ -26,4 +26,3 @@ def handle(st):
 # Response
 # Empty - success
 # Non-empty - failure
-

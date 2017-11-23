@@ -1,3 +1,4 @@
 python-twitter
 minio
 Pillow
+requests

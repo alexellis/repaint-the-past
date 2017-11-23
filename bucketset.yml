@@ -10,5 +10,4 @@ functions:
     environment:
       minio_secret_key: vMIoCaBu9sSg4ODrSkbD9CGXtq0TTpq6kq7psLuE
       minio_access_key: ZBPIIAOCJRY9QLUVEHQO
-      minio_url: 127.0.0.1:9000
-
+      minio_authority: 127.0.0.1:9000

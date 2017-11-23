@@ -54,10 +54,10 @@ Create `credentials.yml` with these contents:
 environment:
   minio_secret_key: <minio secret key>
   minio_access_key: <minio access key>
-  minio_url: <minio url>
+  minio_authority: <host:port>
 ```
 
-Do not include HTTP in the `minio_url`.
+Do not include HTTP in the `minio_authority`.
 
 For example:
 
@@ -65,7 +65,7 @@ For example:
 environment:
   minio_secret_key: vMIoCaBu9sSg4ODrSkbD9CGXtq0TTpq6kq7psLuE
   minio_access_key: ZBPIIAOCJRY9QLUVEHQO
-  minio_url: 192.168.0.10:9000
+  minio_authority: 192.168.0.10:9000
 ```
 
 And now deploy the OpenFaaS functions
@@ -135,7 +135,7 @@ Create `tweetlistener.envs` with the following contents:
 # tweetlistener.envs (add your values below)
 minio_access_key=<minio access key>
 minio_secret_key=<minio secret key>
-minio_hostname=<minio url>
+minio_authority=<host:port>
 consumer_key=<twitter consumer key>
 consumer_secret=<twitter consumer secret>
 access_token=<twitter token>
@@ -155,7 +155,7 @@ Update `credentials.yml` to add your Twitter details
 environment:
   minio_secret_key: <minio secret key>
   minio_access_key: <minio access key>
-  minio_url: <minio url>
+  minio_authority: <host:port>
   consumer_key: <twitter consumer key>
   consumer_secret: <twitter consumer secret>
   access_token: <twitter token>

@@ -32,7 +32,7 @@ Output:
 }
 """
 def handle(json_in):
-    minioClient = Minio(os.environ['minio_url'],
+    minioClient = Minio(os.environ['minio_authority'],
                     access_key=os.environ['minio_access_key'],
                     secret_key=os.environ['minio_secret_key'],
                     secure=False)
@@ -56,7 +56,7 @@ def handle(json_in):
         now = str(int(round(time.time() * 1000)))
 
         filename_in = now + '.jpg'
-        filename_out = now + '_output.jpg'
+        filename_out = json_in['output_filename']
         file_path_in = tempfile.gettempdir() + '/' + filename_in
         file_path_out = tempfile.gettempdir() + '/' + filename_out
 
