@@ -6,7 +6,7 @@ functions:
   colorization:
     lang: Dockerfile
     handler: ./colorise
-    image: developius/openfaas-colorization
+    image: alexellis/openfaas-colorization:0.2
     environment:
       read_timeout: 60
       write_timeout: 60
@@ -16,4 +16,4 @@ functions:
   normalisecolor:
     lang: Dockerfile
     handler: ./normalisecolor
-    image: alexellis2/normalisecolor:0.1
+    image: alexellis2/normalisecolor:0.2
