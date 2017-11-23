@@ -22,7 +22,8 @@ def nostdout():
 """
 Input:
 {
-  "image": "minio_path_to_image.jpg"
+  "image": "minio_path_to_image.jpg",
+  "output_filename": "minio_path_to_output_image.jpg"
 }
 
 Output:
