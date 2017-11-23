@@ -94,9 +94,9 @@ def handle(json_in):
 
         plt.imsave(file_path_out, img_rgb_out)
 
-
+        gateway_url = os.getenv("gateway_url", "http://gateway:8080")
         # normalise image
-        url = "http://gateway:8080/function/normalisecolor"
+        url = gateway_url + "/function/normalisecolor"
         with open(file_path_out, "rb") as f:
             r = requests.post(url, data=f.read())
 
