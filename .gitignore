@@ -6,3 +6,5 @@ template
 *.mov
 *.mp4
 build
+.idea
+.vscode
