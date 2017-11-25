@@ -14,6 +14,7 @@ if(__name__ == "__main__"):
     st = get_stdin()
     res = handler.handle(st)
     if (res['status_id']):
-        print("Replied to %i" % res['reply_to'])
+        print("Replied to "+ str(res['reply_to']))
     else:
-        print("Tweetback to %s failed" % res['reply_to'])
+        print("Tweetback failed to" + str(res['reply_to']))
+
