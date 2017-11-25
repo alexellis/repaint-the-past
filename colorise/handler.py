@@ -2,6 +2,7 @@ import os
 os.environ['GLOG_minloglevel'] = '3'
 
 import numpy as np
+import requests
 import sys, time, warnings
 import skimage.color as color
 import matplotlib.pyplot as plt

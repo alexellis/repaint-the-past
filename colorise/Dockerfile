@@ -20,6 +20,8 @@ ENV fprocess="python -u index.py"
 ENV read_timeout="60"
 ENV write_timeout="60"
 
+RUN pip install requests
+
 COPY index.py index.py
 COPY handler.py handler.py
 
