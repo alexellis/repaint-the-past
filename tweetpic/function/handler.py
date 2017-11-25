@@ -44,11 +44,13 @@ def requeue(st):
     if r.status_code!= 202:
         print "Mailbox says: ", r.text
 
+
 """
 Input:
 {
   "status_id": "twitter status ID",
   "image": "minio_path_to_image.jpg"
+  "duration": 5.5
 }
 """
 
