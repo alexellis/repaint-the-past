@@ -13,6 +13,8 @@ def nostdout():
     yield
     sys.stdout = save_stdout
 
+gateway_hostname = os.getenv("gateway_hostname", "gateway")
+twitter_account = os.getenv("twitter_account", "@colorisebot")
 auth = OAuthHandler(os.environ['consumer_key'], os.environ['consumer_secret'])
 auth.set_access_token(os.environ['access_token'], os.environ['access_token_secret'])
 
@@ -45,13 +47,13 @@ class TweetListener(StreamListener):
                             with nostdout():
                                 minioClient.fput_object('colorization', filename_in, file_path_in)
 
-                            headers = {'X-Callback-Url': 'http://gateway:8080/async-function/tweetpic'}
+                            headers = {'X-Callback-Url': 'http://' + gateway_hostname + ':8080/async-function/tweetpic'}
                             json_data = {
                                 "image": filename_in,
                                 "output_filename": filename_out,
                                 "status_id": tweet['id_str']
                             }
-                            r = requests.post('http://gateway:8080/async-function/colorization', json=json_data, headers=headers)
+                            r = requests.post('http://' + gateway_hostname + ':8080/async-function/colorization', json=json_data, headers=headers)
                             if (r.status_code == requests.codes.accepted):
                                 print("Colorization succeeded for -> " + media['media_url_https'])
                             else:
@@ -75,4 +77,4 @@ if __name__ == '__main__':
 
     print('Listening for tweets')
     #This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
-    stream.filter(track=['@colorisebot'])
+    stream.filter(track=[twitter_account])
