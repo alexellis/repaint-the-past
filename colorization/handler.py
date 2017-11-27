@@ -34,14 +34,20 @@ Output:
   "duration": 5.5
 }
 """
-def handle(json_in):
-    minioClient = Minio(os.environ['minio_authority'],
-                    access_key=os.environ['minio_access_key'],
-                    secret_key=os.environ['minio_secret_key'],
-                    secure=False)
+def handle(request_in):
+    binary_mode = os.getenv('minio_authority') == None
+    json_in = None
+    minio_client = None
+
+    if binary_mode == False:
+        minioClient = Minio(os.environ['minio_authority'],
+                        access_key=os.environ['minio_access_key'],
+                        secret_key=os.environ['minio_secret_key'],
+                        secure=False)
+        json_in = json.loads(request_in)
+
 
     caffe.set_mode_cpu()
-
     # Select desired model
     net = caffe.Net('./models/colorization_deploy_v2.prototxt', './models/colorization_release_v2.caffemodel', caffe.TEST)
 
@@ -51,8 +57,6 @@ def handle(json_in):
     pts_in_hull = np.load('./resources/pts_in_hull.npy') # load cluster centers
     net.params['class8_ab'][0].data[:,:,0,0] = pts_in_hull.transpose((1,0)) # populate cluster centers as 1x1 convolution kernel
 
-    json_in = json.loads(json_in)
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
@@ -60,13 +64,22 @@ def handle(json_in):
         uuid_value = str(uuid.uuid4())
 
         filename_in =  now + '_' + uuid_value + '.jpg'
-        filename_out = json_in['output_filename']
-        file_path_in = tempfile.gettempdir() + '/' + filename_in
-        file_path_out = tempfile.gettempdir() + '/' + filename_out
+        filename_out = None
+        file_path_in = None
+        file_path_out = None
 
-        with nostdout():
-            minioClient.fget_object('colorization', json_in['image'], file_path_in)
-
+        if binary_mode == False:
+            filename_out = json_in['output_filename']
+            file_path_in = tempfile.gettempdir() + '/' + filename_in
+            file_path_out = tempfile.gettempdir() + '/' + filename_out
+            with nostdout():
+                minioClient.fget_object('colorization', json_in['image'], file_path_in)
+        else:
+            file_path_in = tempfile.gettempdir() + '/' + filename_in
+            file_path_out = tempfile.gettempdir() + '/' + 'out.' + filename_in
+            with open(file_path_in, 'ab') as f:
+                f.write(request_in)
+        
         # load the original image
         img_rgb = caffe.io.load_image(file_path_in)
 
@@ -99,19 +112,28 @@ def handle(json_in):
         plt.imsave(file_path_out, img_rgb_out)
 
         gateway_url = os.getenv("gateway_url", "http://gateway:8080")
-        # normalise image
-        url = gateway_url + "/function/normalisecolor"
-        with open(file_path_out, "rb") as f:
-            r = requests.post(url, data=f.read())
 
-        with open(file_path_out, "wb") as f:
-            f.write(r.content)
+        val = os.getenv("normalisecolor_enabled", "True")
 
-        json_out = json_in
-        json_out['image'] = filename_out
-        json_out['duration'] = duration
+        normalise_enabled = (val == "true" or val == "1" or val == "True")
 
-        with nostdout():
-            minioClient.fput_object('colorization', filename_out, file_path_out)
+        if normalise_enabled:
+            url = gateway_url + "/function/normalisecolor"
+            
+            with open(file_path_out, "rb") as f:
+                r = requests.post(url, data= f.read())
+                with open(file_path_out, "wb") as f:
+                    f.write(r.content)
 
-        return json_out
+        if binary_mode == False:
+                json_out = json_in
+                json_out['image'] = filename_out
+                json_out['duration'] = duration
+
+                with nostdout():
+                    minioClient.fput_object('colorization', filename_out, file_path_out)
+
+                return json_out
+        else:
+            with open(file_path_out, "rb") as f:
+                sys.stdout.write(f.read())

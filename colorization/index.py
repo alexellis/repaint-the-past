@@ -1,6 +1,7 @@
 import sys
 import handler
 import json
+import os
 
 def get_stdin():
     buf = ""
@@ -19,5 +20,10 @@ def read_head():
     return buf
 
 if(__name__ == "__main__"):
-    st = get_stdin()
-    print(json.dumps(handler.handle(st)))
+    binary_mode = os.getenv('minio_authority') == None
+    if binary_mode == True:
+        st = sys.stdin.read()
+        handler.handle(st)
+    else:
+        st = get_stdin()
+        print(json.dumps(handler.handle(st)))
