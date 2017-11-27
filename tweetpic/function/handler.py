@@ -55,7 +55,12 @@ Input:
 """
 
 def handle(st):
+    print("Incoming request " str(st))
+
     req = json.loads(st)
+
+    print("Parsed request")
+
     filename = tempfile.gettempdir() + '/' + str(int(round(time.time() * 1000))) + '.jpg'
     in_reply_to_status_id = req['status_id']
     duration = req['duration']

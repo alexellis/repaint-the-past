@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import scipy.ndimage.interpolation as sni
 import caffe, contextlib, io, tempfile
 import json
+import uuid
 
 from minio import Minio
 from minio.error import ResponseError
@@ -56,8 +57,9 @@ def handle(json_in):
         warnings.simplefilter("ignore")
 
         now = str(int(round(time.time() * 1000)))
+        uuid_value = str(uuid.uuid4())
 
-        filename_in = now + '.jpg'
+        filename_in =  now + '_' + uuid_value + '.jpg'
         filename_out = json_in['output_filename']
         file_path_in = tempfile.gettempdir() + '/' + filename_in
         file_path_out = tempfile.gettempdir() + '/' + filename_out
