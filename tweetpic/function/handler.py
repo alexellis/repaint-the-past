@@ -55,7 +55,7 @@ Input:
 """
 
 def handle(st):
-    print("Incoming request " str(st))
+    print("Incoming request " + str(st))
 
     req = json.loads(st)
 
