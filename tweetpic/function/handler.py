@@ -81,7 +81,7 @@ def handle(st):
         status_id = False
 
         try:
-            status = api.PostUpdate("I colourised your image in %.1f seconds. Find out how: https://subr.pw/s/cmpb5x7" % duration,
+            status = api.PostUpdate("We just colourised your image in %.1f seconds. Find out how: https://goo.gl/cSK4Xu" % duration,
                 media=image,
                 auto_populate_reply_metadata=True,
                 in_reply_to_status_id=in_reply_to_status_id)
