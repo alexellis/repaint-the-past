@@ -27,7 +27,7 @@ def download_file(url, save_path):
     with open(save_path, 'wb') as f:
         shutil.copyfileobj(r.raw, f)
 
-    return dest
+    return save_path
 
 """
 Input:
@@ -65,33 +65,29 @@ def handle(request_in):
     pts_in_hull = np.load('./resources/pts_in_hull.npy') # load cluster centers
     net.params['class8_ab'][0].data[:,:,0,0] = pts_in_hull.transpose((1,0)) # populate cluster centers as 1x1 convolution kernel
 
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
+    now = str(int(round(time.time() * 1000)))
+    uuid_value = str(uuid.uuid4())
 
-        now = str(int(round(time.time() * 1000)))
-        uuid_value = str(uuid.uuid4())
+    filename_in =  now + '_' + uuid_value + '.jpg'
+    filename_out = None
+    file_path_in = tempfile.gettempdir() + '/' + filename_in
+    file_path_out = tempfile.gettempdir() + '/out.' + filename_in
 
-        filename_in =  now + '_' + uuid_value + '.jpg'
-        filename_out = None
-        file_path_in = None
-        file_path_out = None
-
+    if url_mode:
+        download_file(request_in, file_path_in)
+    else:
         if binary_mode:
-            file_path_in = tempfile.gettempdir() + '/' + filename_in
             file_path_out = tempfile.gettempdir() + '/' + 'out.' + filename_in
             with open(file_path_in, 'ab') as f:
                 f.write(request_in)
 
         else:
             filename_out = json_in['output_filename']
-            file_path_in = tempfile.gettempdir() + '/' + filename_in
-            file_path_out = tempfile.gettempdir() + '/' + filename_out
             with nostdout():
                 minioClient.fget_object('colorization', json_in['image'], file_path_in)
 
-        if url_mode:
-            download_file(request_in, file_path_in)
-
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
 
         # load the original image
         img_rgb = caffe.io.load_image(file_path_in)
