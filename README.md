@@ -74,6 +74,33 @@ And now deploy the OpenFaaS functions
 $ faas-cli deploy -f stack.yml
 ```
 
+## Configuration
+
+There are three modes supported by the `colorise` function, as documented below.
+
+### `minio`
+Uses minio object storage for saving images and is enabled by setting `minio_authority` as above. When in this mode, input to the function must be JSON in the following format:
+
+```json
+{
+  "output_filename": "output.jpg",
+  "image": "input.jpg"
+}
+```
+
+This will retrieve `input.jpg` from the minio bucket `colorization`, colourise that image and then upload it to the same bucket with a name of `output.jpg`.
+
+### `binary_mode`
+Pure binary is used for input & output. Enabled by _not_ setting the `minio_authority` env var.
+Simply POST the raw image and pipe the output back into a file.
+
+### `url_mode`
+POST a URL as input and receive binary output. Enabled by setting env var `url_mode` to `"true"`
+
+### Other options
+There is also the ability to pass the image through imagemagick to remove some of the saturation.
+This can be enabled by setting the env var `normalise_enabled` to `"true"`.
+
 # Invocation
 
 ## Configure Minio (object storage)

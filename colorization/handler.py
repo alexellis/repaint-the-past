@@ -43,12 +43,15 @@ Output:
 }
 """
 def handle(request_in):
-    binary_mode = os.getenv('minio_authority') == None
+    minio_mode = os.getenv('minio_authority') != None
+    binary_mode = not minio_mode
     url_mode = os.getenv('url_mode') != None
+    normalise_enabled = os.getenv('normalise_enabled') != None
+
     json_in = None
     minio_client = None
 
-    if binary_mode == False:
+    if minio_mode:
         minioClient = Minio(os.environ['minio_authority'],
                         access_key=os.environ['minio_access_key'],
                         secret_key=os.environ['minio_secret_key'],
@@ -76,15 +79,16 @@ def handle(request_in):
     if url_mode:
         download_file(request_in, file_path_in)
     else:
-        if binary_mode:
-            file_path_out = tempfile.gettempdir() + '/' + 'out.' + filename_in
-            with open(file_path_in, 'ab') as f:
-                f.write(request_in)
-
-        else:
+        if minio_mode:
             filename_out = json_in['output_filename']
             with nostdout():
                 minioClient.fget_object('colorization', json_in['image'], file_path_in)
+
+        else:
+            # binary mode
+            file_path_out = tempfile.gettempdir() + '/' + 'out.' + filename_in
+            with open(file_path_in, 'ab') as f:
+                f.write(request_in)
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -122,15 +126,11 @@ def handle(request_in):
 
         gateway_url = os.getenv("gateway_url", "http://gateway:8080")
 
-        val = os.getenv("normalisecolor_enabled", "True")
-
-        normalise_enabled = (val == "true" or val == "1" or val == "True")
-
         if normalise_enabled:
             url = gateway_url + "/function/normalisecolor"
 
             with open(file_path_out, "rb") as f:
-                r = requests.post(url, data= f.read())
+                r = requests.post(url, data=f.read())
                 with open(file_path_out, "wb") as f:
                     f.write(r.content)
 
