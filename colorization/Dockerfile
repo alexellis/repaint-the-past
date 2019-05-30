@@ -12,7 +12,7 @@ RUN mkdir -p models resources \
     && curl -sL http://eecs.berkeley.edu/~rich.zhang/projects/2016_colorization/files/demo_v2/colorization_release_v2.caffemodel > ./models/colorization_release_v2.caffemodel \
     && curl -sL https://raw.githubusercontent.com/richzhang/colorization/master/models/colorization_deploy_v2.prototxt > ./models/colorization_deploy_v2.prototxt
 
-RUN curl -sSL https://github.com/openfaas/faas/releases/download/0.6.5/fwatchdog > /usr/bin/fwatchdog \
+RUN curl -sSL https://github.com/openfaas/faas/releases/download/0.13.4/fwatchdog > /usr/bin/fwatchdog \
     && chmod +x /usr/bin/fwatchdog
 RUN chmod +x /usr/bin/fwatchdog
 

@@ -6,15 +6,16 @@ functions:
   colorization:
     lang: Dockerfile
     handler: ./colorization
-    image: alexellis2/openfaas-colorization:0.4.0
+    image: alexellis2/openfaas-colorization:0.4.1
     environment:
       read_timeout: 60
       write_timeout: 60
       write_debug: true
-    environment_file:
-      - credentials.yml
+      #    environment_file:
+      # - credentials.yml
 
   normalisecolor:
     lang: Dockerfile
     handler: ./normalisecolor
-    image: alexellis2/normalisecolor:0.2
+    image: alexellis2/normalisecolor:0.2.1
+
